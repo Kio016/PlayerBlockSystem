@@ -139,6 +139,31 @@ auto CPlayerBlock::DeletePlayerBlock(const std::string &strBlockingPlayerName, c
 	DBManager::Instance().DirectQuery("DELETE FROM player.player_block_list WHERE blockingplayername = '%s' AND blockedplayername = '%s'", strBlockingPlayerName.c_str(), strBlockedPlayerName.c_str());
 }
 
+auto CPlayerBlock::ChangeName(const std::string &strOldName, const std::string &strNewName) -> void
+{
+	auto it = m_map_PlayerBlock.find(strOldName);
+	if (it != m_map_PlayerBlock.end())
+	{
+		m_map_PlayerBlock[strNewName] = std::move(it->second);
+		m_map_PlayerBlock.erase(it);
+	}
+
+	for (auto &it : m_map_PlayerBlock)
+	{
+		auto it2 = it.second.find(strOldName);
+		if (it2 != it.second.end())
+		{
+			it.second.erase(it2);
+			it.second.emplace(strNewName);
+		}
+	}
+
+	DBManager::Instance().DirectQuery("UPDATE player.player_block_list SET blockingplayername = '%s' WHERE blockingplayername = '%s'", strNewName.c_str(), strOldName.c_str());
+	DBManager::Instance().DirectQuery("UPDATE player.player_block_list SET blockedplayername = '%s' WHERE blockedplayername = '%s'", strNewName.c_str(), strOldName.c_str());
+
+	sys_log(0, "PLAYER_BLOCK: ChangeName: %s -> %s", strOldName.c_str(), strNewName.c_str());
+}
+
 auto CPlayerBlock::BootPlayerBlockList() -> void
 {
 	std::unique_ptr<SQLMsg> pMsg(DBManager::Instance().DirectQuery("SELECT * FROM player.player_block_list"));

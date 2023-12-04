@@ -23,6 +23,8 @@ public:
 	auto InsertPlayerBlock(const std::string &strBlockingPlayerName, const std::string &strBlockedPlayerName) -> void;
 	auto DeletePlayerBlock(const std::string &strBlockingPlayerName, const std::string &strBlockedPlayerName) -> void;
 
+	auto ChangeName(const std::string &strOldName, const std::string &strNewName) -> void;
+
 	auto BootPlayerBlockList(void) -> void;
 
 private:
