@@ -21,7 +21,7 @@
 
 		d->GetCharacter()->ChatPacket(CHAT_TYPE_SHOUT, "%s", m_str);
 
-// Add below:
+// Add above:
 
 #ifdef ENABLE_PLAYER_BLOCK_SYSTEM
 		auto& rkPlayerBlockMgr = CPlayerBlock::Instance();
